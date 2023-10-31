@@ -1,0 +1,218 @@
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Dashboard</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f4f4f4;
+                text-align: center;
+            }
+
+            h1 {
+                color: #333;
+            }
+
+            h2 {
+                margin-top: 20px;
+                color: #333;
+            }
+
+            ul {
+                list-style-type: none;
+                padding: 0;
+            }
+
+            li {
+                margin: 10px 0;
+            }
+
+            li button {
+                background-color: #007BFF;
+                color: #fff;
+                padding: 5px 10px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            li button:hover {
+                background-color: #0056b3;
+            }
+
+            form {
+                max-width: 300px;
+                margin: 0 auto;
+            }
+
+            input[type="text"] {
+                width: 100%;
+                padding: 10px;
+                margin: 5px 0;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+            }
+
+            input[type="button"] {
+                background-color: #007BFF;
+                color: #fff;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            input[type="button"]:hover {
+                background-color: #0056b3;
+            }
+
+            p {
+                color: #666;
+            }
+
+            a {
+                text-decoration: none;
+                color: #007BFF;
+            }
+
+            #timer {
+                font-size: 24px;
+                font-weight: bold;
+            }
+
+            #addJobButton {
+                background-color: #007BFF;
+                color: #fff;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+            }
+
+            #addJobButton:hover {
+                background-color: #0056b3;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Welcome, {{ user }}</h1>
+        <h2>Job List</h2>
+        <ul>
+            {% for job in user_jobs %}
+                <li>
+                    Start Time: {{ job['start_time'] }}, WO#: {{ job['wo_number'] }}
+                    {% if check_role('stop') %}
+                        <button onclick="stopJob('{{ job['id'] }}');">Stop</button>
+                    {% endif %}
+                    <span>Elapsed Time: <span id="timer_{{ job['id'] }}">00:00:00</span></span>
+                </li>
+            {% endfor %}
+        </ul>
+        <h2>Start a New Job</h2>
+        <h2>Add Job</h2>
+        <div id="jobInputs">
+            <!-- Dynamic job start forms will be added here -->
+        </div>
+        <button id="addJobButton" onclick="promptForWO();">Add Job</button>
+        <p><a href="/login">Logout</a></p>
+
+        <script type="text/javascript">
+            let startTime = null;
+            let timerInterval;
+
+            const jobTimers = {};
+
+            // Function to start a timer for a specific job
+            function startTimer(jobId) {
+                if (!jobTimers[jobId]) {
+                    jobTimers[jobId] = {
+                        startTime: new Date().getTime(),
+                        timerInterval: setInterval(() => updateTimer(jobId), 1000),
+                    };
+                }
+            }
+
+            // Function to update and display the timer for a specific job
+            function updateTimer(jobId) {
+                if (jobTimers[jobId]) {
+                    const currentTime = new Date().getTime();
+                    const elapsedTime = new Date(currentTime - jobTimers[jobId].startTime);
+                    const timerElement = document.getElementById(`timer_${jobId}`);
+                    if (timerElement) {
+                        timerElement.innerHTML = elapsedTime.toISOString().substr(11, 8);
+                    }
+                }
+            }
+
+            // Function to stop the timer for a specific job
+            // Function to stop the timer for a specific job
+            function stopTimer(jobId) {
+                if (jobTimers[jobId]) {
+                    clearInterval(jobTimers[jobId].timerInterval);
+                    updateTimer(jobId); // Update the Elapsed Time when stopping
+                    delete jobTimers[jobId];
+                }
+            }
+
+
+            // Function to start a new job
+            function startNewJob() {
+                const woNumber = document.getElementById('wo_number').value;
+                if (woNumber !== "") {
+                    // Send the WO# to the server using an AJAX request
+                    // In this function, you should make an AJAX request to your server to start a new job
+                    // When the server responds with success, you can call startTimer() to start the timer for the new job
+                    // This code should be added here.
+                }
+            }
+
+            // Function to add a new job start form dynamically
+            function addJobInput() {
+                const jobInputs = document.getElementById('jobInputs');
+                const newJobInput = document.createElement('form');
+                newJobInput.method = 'POST';
+                newJobInput.action = '/start_job';
+                newJobInput.innerHTML = `
+                    <input type="text" name="wo_number" placeholder="WO#" required>
+                    <input type="button" value="Start" onclick="startNewJob();">
+                `;
+                jobInputs.appendChild(newJobInput);
+            }
+
+            // Prompt for WO# input when clicking "Add Job" button
+            function promptForWO() {
+                const woNumber = prompt("Enter the WO# for the new job:");
+                if (woNumber !== null && woNumber !== "") {
+                    // Create a new job with the entered WO# and add it to the job list
+                    addJob(woNumber);
+                }
+            }
+
+            // Create a new job with the given WO# and add it to the job list
+            function addJob(woNumber) {
+                // You can add your logic to send the WO# to the server and handle the response here
+                // For now, let's add a placeholder item to the job list
+                const newJob = {
+                    start_time: "Start Time Placeholder",
+                    wo_number: woNumber,
+                    id: "job_id_placeholder", // You should replace this with the actual job ID
+                };
+
+                // Add the new job to the job list
+                const jobList = document.querySelector('ul');
+                if (jobList) {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        Start Time: ${newJob.start_time}, WO#: ${newJob.wo_number}
+                        <button onclick="stopJob('${newJob.id}');">Stop</button>
+                        <span>Elapsed Time: <span id="timer_${newJob.id}">00:00:00</span></span>
+                    `;
+                    jobList.appendChild(li);
+
+                    // Start the timer for the new job
+                    startTimer(newJob.id);
+                }
+            }
+        </script>
+    </body>
+    </html>

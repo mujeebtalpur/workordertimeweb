@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Register</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        
+        h1 {
+            color: #333;
+        }
+        
+        form {
+            max-width: 300px;
+            margin: 0 auto;
+        }
+        
+        label {
+            display: block;
+            text-align: left;
+            margin-top: 10px;
+            color: #333;
+        }
+        
+        select, input[type="text"], input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        input[type="submit"] {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        input[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+        
+        p {
+            color: #666;
+        }
+        
+        a {
+            text-decoration: none;
+            color: #007BFF;
+        }
+    </style>
+</head>
+<body>
+    <h1>Register</h1>
+    <form method="POST" action="/register">
+        <label for="name">Name:</label>
+        <input type="text" name="name" placeholder="Name" required>
+        
+        <label for="department"> Department:</label>
+        <select name="department" id="department" required>
+            <option value="" disabled selected>Select an Option</option>
+			<option value="Sales">Sales</option>
+            <option value="Graphics">Graphics</option>
+            <option value="Ripping">Printing - Ripping</option>
+            <option value="Printing">Printing - Printing</option>
+            <option value="Transfer">Printing - Transfer</option>
+            <option value="Zund">Printing - Zund</option>
+            <option value="Finishing">Finishing</option>
+            <option value="Sewing">Sewing</option>
+            <option value="Packaging">Packaging</option>
+            <option value="Shipping">Shipping</option>
+            <option value="Engineering">Engineering</option>
+            <option value="Inventory">Metal Shop - Inventory</option>
+            <option value="Cutting">Metal Shop - Cutting</option>
+            <option value="Bending">Metal Shop - Bending</option>
+            <option value="Drilling">Metal Shop - Drilling</option>
+            <option value="Welding">Metal Shop - Welding</option>
+            <option value="Pre Assembly">Metal Shop - Pre Assembly</option>
+            <option value="Out for Paint">Metal Shop - Out for Paint</option>
+            <option value="Back from Paint">Metal Shop - Back from Paint</option>
+            <option value="Final Assembly">Metal Shop - Final Assembly</option>
+            <option value="Lighting">Lighting</option>
+            <option value="Other">Other</option>
+        </select>
+        
+        <label for="password">Password:</label>
+        <input type="password" name="password" id="password" placeholder="Password" required>
+        
+        <label for="role">Role (User/Management/Department Head):</label>
+        <input type="text" name="role" id="role" placeholder="Role" required>
+        
+        <input type="submit" value="Register">
+    </form>
+    <p>Already have an account? <a href="/login">Login</a></p>
+	
+	<script>
+        function validateForm() {
+            const name = document.getElementById("name").value;
+            const department = document.getElementById("department").value;
+            const password = document.getElementById("password").value;
+            const role = document.getElementById("role").value;
+
+            if (name === "" || department === "" || password === "" || role === "") {
+                alert("Please provide all required information.");
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+	
+</body>
+</html>
